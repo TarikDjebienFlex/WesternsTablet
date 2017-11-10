@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		title="help">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.events.ViewNavigatorEvent;
+		
+			private var workingFile:File;
+			private var webView:StageWebView ;
+			
+			private function helpDisplay():void{
+				//Set up web view object
+				webView= new StageWebView()
+				webView.stage = this.stage;
+				var helpViewPort:Rectangle = new Rectangle( 0, 0, this.stage.stageWidth, this.stage.stageHeight-60 );
+				webView.viewPort = helpViewPort;
+				
+				addEventListener(ViewNavigatorEvent.REMOVING,onRemove);
+				webView.addEventListener(ErrorEvent.ERROR, onWebViewError );
+				webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onWebViewLocChanging );
+				webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onWebViewLocChange ); 
+				
+				//Copy the html file outside the app directory
+				var templateFile:File = File.applicationDirectory.resolvePath( "help.html" );
+				workingFile = File.createTempFile();
+				templateFile.copyTo( workingFile, true ); 
+				
+				try
+				{
+					webView.loadURL( workingFile.url );
+				}
+				catch (e:Error)
+				{
+					trace( e );
+				} 
+			}
+			
+			private function onRemove(event:ViewNavigatorEvent):void
+			{
+				this.webView.dispose();
+			}
+			
+			private function onWebViewLocChange( event:LocationChangeEvent ):void
+			{
+				trace( "Change to" + event.location );
+				if( event.location != workingFile.url )
+				{
+					//Reset location back to our ad display page
+					navigateToURL( new URLRequest( event.location ) );
+					try
+					{
+						webView.loadURL( workingFile.url );
+					}
+					catch (e:Error)
+					{
+						trace( e );
+					}
+				}
+			} 
+			
+			private function onWebViewLocChanging( event:LocationChangeEvent ):void
+			{
+				trace( "Changing " + event.location );
+				event.preventDefault();
+				navigateToURL( new URLRequest( event.location ) );
+			} 
+			
+			private function onWebViewError( error:ErrorEvent ):void
+			{
+				trace( error );
+			}
+		]]>
+	</fx:Script>
+	
+<s:states>
+	<s:State name="portrait"/>
+	<s:State name="landscape"/>
+</s:states>
+	
+</s:View>

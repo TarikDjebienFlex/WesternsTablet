@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:assets="assets.*"
+		xmlns:components="components.*"
+		
+		destructionPolicy="never"
+		enabled="false"
+		
+		viewActivate="viewActivateHandler(event)"
+		creationComplete="creationCompleteHandler(event)"
+		>
+	
+	<fx:Declarations>
+		<s:Button id="detailBtn"
+				  label="Détail"
+				  height="90%"
+				  enabled="false"
+				  click="navigator.popView(_fadeTrans)"/>
+		<s:FlipViewTransition id="_flipTransition"
+							  mode="cube"/>
+	</fx:Declarations>
+	
+	<s:navigationContent/>
+	<s:titleContent>
+		<s:Label text="{data.fr}"
+				 styleName="titleDisplay"
+				 width="100%"
+				 maxDisplayedLines="1"/>
+	</s:titleContent>
+	<s:actionContent>
+		<s:Button id="webBtn"
+				  label="Web"
+				  visible="{_imdb.id!=null}"
+				  width="100%" height="90%"
+				  click="imdbIcon_clickHandler(event)"
+				  styleName="actionBarBtn"/>
+	</s:actionContent>
+	
+	<s:viewMenuItems>
+		<components:HomeMenuItem appNavigator="{navigator}"/>
+	</s:viewMenuItems>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			import spark.transitions.CrossFadeViewTransition;
+			import spark.transitions.FlipViewTransition;
+			import spark.transitions.FlipViewTransitionMode;
+			
+			import utils.Mobile;
+			
+			import vo.IMDbvo;
+			import vo.WesternVO;
+			
+			import westernsEvents.IMDbEvent;
+			
+			[Bindable]
+			private var _imdb:IMDbvo=null;
+			
+			[Bindable]
+			[Embed("assets/mail.png")]
+			private var _mailIcon:Class;
+			
+			private var _fadeTrans:CrossFadeViewTransition=new CrossFadeViewTransition();
+			private var _flipTrans:FlipViewTransition=new FlipViewTransition();
+			
+			/**
+			 * activation de la vue
+			 * @param event
+			 *
+			 */
+			private function viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+			}
+			
+			private function creationCompleteHandler(event:FlexEvent):void
+			{
+				imdbDetails.imdbService.send();
+				Mobile.addIOSbtn(detailBtn);
+			}
+			
+			/**
+			 * clic pour naviguer vers site web IMDb
+			 * @param event
+			 *
+			 */
+			private function imdbIcon_clickHandler(event:MouseEvent):void
+			{
+				if (_imdb != null)
+				{
+					navigator.pushView(WesternsIMDbWeb, _imdb, null);//_flipTrans
+				}
+			}
+			
+			private function imdbDetails_imdbResultHandler(event:IMDbEvent):void
+			{
+				_imdb=event.imdbvo;
+				
+				detailBtn.enabled=true;
+				webBtn.visible=true;
+				enabled=true;
+			}
+		]]>
+	</fx:Script>
+	
+	<components:IMDbDetails id="imdbDetails"
+							height="100%"
+							width="100%"
+							western="{data as WesternVO}"
+							imdbResult="imdbDetails_imdbResultHandler(event)"
+							left="5"
+							right="5"
+							top="5"
+							bottom="5"/>
+	
+	
+</s:View>

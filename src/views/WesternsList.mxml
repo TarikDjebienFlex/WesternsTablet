@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		
+		addedToStage="addedToStageHandler(event)"
+		viewActivate="viewActivateHandler(event)"
+		keyUp="view_keyUpHandler(event)" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			import utils.Mobile;
+			
+			import westernsEvents.SingleParamEvent;
+			import westernsEvents.WesternsCollectionChange;
+			
+			private static const WESTERN_FIND_DEFAULT:String="Titre du Western";
+			[Bindable]
+			private var _scaleFactor:Number=1;
+			
+			private var _app:Object=FlexGlobals.topLevelApplication;
+			
+			/**
+			 *
+			 * @param event
+			 *
+			 */
+			private function viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				_app.addEventListener(WesternsCollectionChange.WESTERNS_COLLECTION_CHANGE_ARRAY,westernsCollectionChangeHandler);
+				
+				if (data == null)
+				{ // instanciation de la vue et pas restauration
+					// on affiche tous les films
+					searchFilms("");
+				}
+				_scaleFactor=_app.scaleFactor;
+				
+				/* la liste utilise un TileLayout
+				dont le nombre de colonnes dépend :
+				- de l'orientation
+				- des dimensions du périphérique
+				*/
+				setTileLayout(Mobile.getWidth());
+			}
+			
+			private function westernsCollectionChangeHandler(e:WesternsCollectionChange):void{
+				data=e.westerns.arrayCollection;
+			}
+			
+			/**
+			 * Traitement d'un clic sur le menu de choix du tri
+			 * @param event:MouseEvent
+			 *
+			 */
+			private function menuSortItemClick(event:MouseEvent):void
+			{
+				switch (event.currentTarget.label)
+				{
+					case "Tri par Nom":
+						searchFilms(key.text,"fr");
+						break;
+					
+					case "Tri par Année":
+						searchFilms(key.text);
+						break;
+				}
+			}
+			
+			/**
+			 * Traitement d'une sélection d'un film
+			 * navigation vers la vue de detail
+			 * @param event:IndexChangeEvent
+			 *
+			 */
+			private function filmsList_changeHandler(event:IndexChangeEvent):void
+			{
+				navigator.dispatchEvent(new SingleParamEvent(Westerns.WESTERNS_COLLECTION_CHANGE_ITEM,event.newIndex.toString()));
+			}
+			
+			/**
+			 * déclenche la recherche des films ds BDD
+			 * en fonction de la chaine de caractères saisie
+			 */
+			private function searchFilms(key:String,sort:String="year"):void{
+				navigator.dispatchEvent(new SingleParamEvent(Westerns.WESTERNS_SEARCH_FILMS,key+" "+sort));
+			}
+			
+			private function view_keyUpHandler(event:KeyboardEvent):void{
+				
+				if ( event.keyCode == Keyboard.SEARCH || event.keyCode==0x16777247)
+				{
+					trace("Search");
+					if (this.navigator.activeView is WesternsList){
+						searchFilms(key.text);
+					}
+				}
+				trace(event.keyCode);
+			}
+			
+			private function addedToStageHandler(event:Event):void{
+				stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE,orientationChangeHandler);
+			}
+			
+			private function orientationChangeHandler(e:StageOrientationEvent):void{
+				setTileLayout(Mobile.getWidth());
+			}
+			
+			private function setTileLayout(screenWidth:Number):void{
+				if (Mobile.isTablet()){
+					tileLayout.requestedColumnCount=3;
+				}
+				tileLayout.columnWidth=(screenWidth/tileLayout.requestedColumnCount)-tileLayout.horizontalGap;;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="portrait"/>
+		<s:State name="landscape"/>
+	</s:states>
+	
+	<s:navigationContent/>
+	
+	<s:titleContent>
+		<s:TextInput id="key"
+					 width="100%"
+					 height="80%"
+					 styleName="keySearch"
+					 enter="searchFilms(key.text)"
+					 focusOut="searchFilms(key.text)"
+					 prompt="{WESTERN_FIND_DEFAULT}"/>
+	</s:titleContent>
+	
+	<s:actionContent>
+		<s:Button label="Tri"
+				  width="100"
+				  height="80%"
+				  click="FlexGlobals.topLevelApplication.viewMenuOpen=true"
+				  styleName="ActionBarBtn"/>
+	</s:actionContent>
+	
+	<s:viewMenuItems>
+		<s:ViewMenuItem label="Tri par Année"
+						icon="@Embed('assets/83-calendar.png')"
+						click="menuSortItemClick(event)"/>
+		<s:ViewMenuItem label="Tri par Nom"
+						icon="@Embed('assets/152-rolodex.png')"
+						click="menuSortItemClick(event)"/>
+	</s:viewMenuItems>
+	
+	
+	<s:List id="filmsList"
+			left="0" right="0"
+			top="0" bottom="0"
+			change="filmsList_changeHandler(event)"
+			dataProvider="{data}"
+			styleName="mobileList">
+		
+		<s:layout>
+			<s:TileLayout id="tileLayout"
+						  orientation="rows"
+						  horizontalGap="0" verticalGap="0"
+						  requestedColumnCount.landscape="2"
+						  requestedColumnCount.portrait="1"/>
+		</s:layout>
+		
+		<s:itemRenderer>
+			<fx:Component>
+				<s:IconItemRenderer label="{data.fr}"
+									messageFunction="getMessage"
+									iconField="imageURL"
+									decorator="{assets.Chevron}"
+									iconPlaceholder="{assets.LoadingIcon}">
+					
+					<fx:Script>
+						<![CDATA[
+							import assets.Chevron;
+							import assets.LoadingIcon;
+							
+							import vo.WesternVO;
+							
+							private function getMessage(item:Object):Object
+							{
+								var western:WesternVO=item as WesternVO;
+								var label:String=western.director+" ("+western.year+")";
+								
+								return label
+							}
+						]]>
+					</fx:Script>
+				</s:IconItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	
+</s:View>

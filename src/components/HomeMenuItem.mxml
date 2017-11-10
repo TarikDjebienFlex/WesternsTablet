@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewMenuItem xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				label="Accueil"
+				click="appNavigator.popToFirstView()">
+
+	<fx:Script>
+		<![CDATA[
+			import spark.components.ViewNavigator;
+			public var appNavigator:ViewNavigator;
+		]]>
+	</fx:Script>
+
+	<!--<s:icon>
+		<s:BitmapImage source="@Embed('/assets/home240.png')"/>
+	</s:icon>-->
+
+	<s:icon>
+		<s:MultiDPIBitmapSource source160dpi="@Embed('/assets/home160.png')"
+								source240dpi="@Embed('/assets/home240.png')"
+								source320dpi="@Embed('/assets/home320.png')"/>
+	</s:icon>
+</s:ViewMenuItem>

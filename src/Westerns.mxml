@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+							xmlns:s="library://ns.adobe.com/flex/spark"
+							xmlns:bdd="bdd.*"
+							
+							firstView="views.WesternsList"
+							persistNavigatorState="true"
+							splashScreenImage="@Embed('assets/splash.png')"
+							
+							initialize="init()"
+							navigatorStateLoading="navigatorStateLoadingHandler(event)"
+							navigatorStateSaving="navigatorStateSavingHandler(event)"
+							>
+	
+	<fx:Declarations>
+		<bdd:WesternDAO id="westernsDB"/>
+		<s:Bounce id="bounceEasing"/>
+		<s:SlideViewTransition id="_slideViewTransitionPush"
+							   direction="{ViewTransitionDirection.UP}"
+							   mode="{SlideViewTransitionMode.COVER}"
+							   duration="500"
+							   easer="{bounceEasing}"/>
+	</fx:Declarations>
+	
+	<fx:Style source="default.css"/>
+	
+	<fx:Script source="westerns.as" />
+	
+	<s:navigationContent> 
+		<s:Button icon="@Embed('assets/home.png')"
+				  click="navigator.popToFirstView()"/> 
+	</s:navigationContent>
+	
+	
+</s:ViewNavigatorApplication>

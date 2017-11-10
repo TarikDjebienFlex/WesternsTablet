@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:assets="assets.*"
+		  creationComplete="creationCompleteHandler(event)" enabled="false" gap="20"
+		  horizontalAlign="center">
+
+	<fx:Declarations>
+		<s:HTTPService id="imdbService"
+					   resultFormat="text"
+					   url="http://www.imdbapi.com/?t={western.fr}&amp;y={western.year}"
+					   result="imdb_resultHandler(event)"
+					   fault="imdbService_faultHandler(event)"/>
+	</fx:Declarations>
+
+	<fx:Metadata>
+		[Event(name="imdbResult",type="westernsEvents.IMDbEvent")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serialization.json.JSON;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.managers.PersistenceManager;
+			
+			import utils.Mobile;
+			
+			import vo.IMDbvo;
+			import vo.WesternVO;
+			
+			import westernsEvents.IMDbEvent;
+
+			public static const IMDB_RESULT:String="imdbResult";
+
+			[Bindable] public var imdbInfos:IMDbvo=null;
+			private var _western:WesternVO;
+			private var _pm:PersistenceManager=FlexGlobals.topLevelApplication.persistenceManager;
+
+
+			[Bindable]
+			public function get western():WesternVO
+			{
+				return _western;
+			}
+
+			public function set western(value:WesternVO):void
+			{
+				_western=value;
+			}
+
+			/**
+			 * gestion de la réception de la requête vers IMDBAPI
+			 * @param event
+			 *
+			 */
+			private function imdb_resultHandler(event:ResultEvent):void
+			{
+				var imdbResult:Object=JSON.decode(event.result.toString());
+				imdbInfos=IMDbvo.buildFromObject(imdbResult);
+
+				setProgress(false);
+
+				imdbService.removeEventListener(ResultEvent.RESULT, imdb_resultHandler);
+
+				var e:IMDbEvent=new IMDbEvent(IMDB_RESULT,imdbInfos)
+				dispatchEvent(e);
+			}
+
+			/**
+			 * affichage d'un indicateur de progression
+			 * pendant la requête vers IMDb
+			 * @param activate:Boolean
+			 *
+			 */
+			private function setProgress(activate:Boolean):void
+			{
+				bi.visible=false;
+				bi.includeInLayout=false;
+				this.enabled=true;
+			}
+
+			/**
+			 * restauration du destinataire de mail si déjà renseigné
+			 *
+			 */
+			private function creationCompleteHandler(event:FlexEvent):void
+			{
+				restoreMailTo();
+			}
+
+			/**
+			 * le nom du destinataire du mail est sauvegardé
+			 * et ré-affiché lors du rechargement du composant
+			 *
+			 */
+			private function restoreMailTo():void
+			{
+
+				var mailTo:String=String(_pm.getProperty("mailTo"));
+				if (mailTo && mailTo != "null")
+				{
+					mail.text=mailTo;
+				}
+				else
+				{
+					mail.text="foo@bar.com";
+				}
+			}
+
+			/**
+			 * gestion d'un clic sur le bouton d'envoi de mail
+			 * @param event
+			 *
+			 */
+			private function mailBtn_clickHandler(event:MouseEvent):void
+			{
+				// passage d'infos par la queryString
+				var queryString:String="?subject=" + imdbInfos.us + "&body=" + imdbInfos.toString();
+				navigateToURL(new URLRequest('mailto:' + mail.text + queryString));
+			}
+
+			/**
+			 * enregistrement du destinataire du mail
+			 * @param event
+			 *
+			 */
+			private function mail_focusOutHandler(event:FocusEvent):void
+			{
+				// enregistre l'adresse mail dans le data store
+				_pm.setProperty("mailTo", mail.text);
+			}
+			
+			/**
+			 * problème sur la requête HTTP vers imdb API
+			 * @param FaultEvent
+			 *
+			 */
+			private function imdbService_faultHandler(event:FaultEvent):void
+			{
+				setProgress(false);
+				Mobile.alert("Problème de communication avec www.imdbapi.com");
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:TextArea id="plot_ta"
+				width="100%"
+				editable="false"
+				text="{imdbInfos.plot}"/>
+	
+	
+	
+	<s:Label width="90%" styleName="titleDisplay" text="{imdbInfos.us}" textAlign="center"
+			 verticalAlign="bottom"/>
+
+	<s:Scroller width="100%"
+				height="80%">
+		<s:Group horizontalCenter="0">
+
+			<s:BusyIndicator id="bi"
+							 visible="true"
+							 horizontalCenter="0"
+							 symbolColor="white"/>
+
+			<s:Form top="0"
+					width="100%"
+					horizontalCenter="0">
+				<s:layout>
+					<s:FormLayout gap="5"/>
+				</s:layout>
+
+				<s:FormItem width="100%"
+							label="director:">
+					<s:Label text="{imdbInfos.director}"
+							 width="100%"/>
+				</s:FormItem>
+
+				<s:FormItem width="100%"
+							label="actors:">
+					<s:Label text="{imdbInfos.actors}"
+							 width="100%"/>
+				</s:FormItem>
+
+				<s:Line width="100%">
+					<s:stroke>
+						<s:SolidColorStroke color="#3a3a3a"/>
+					</s:stroke>
+				</s:Line>
+
+				<s:FormItem width="100%"
+							label="runtime:">
+					<s:Label text="{imdbInfos.runtime}"/>
+				</s:FormItem>
+
+				<s:FormItem width="100%"
+							label="rating:">
+					<s:Label text="{imdbInfos.rating}"/>
+				</s:FormItem>
+
+				<s:FormItem width="100%"
+							label="genre:">
+					<s:Label text="{imdbInfos.genre}"
+							 width="100%"/>
+				</s:FormItem>
+
+				<s:FormItem width="100%"
+							label="writer:">
+					<s:Label text="{imdbInfos.writer}"
+							 width="100%"/>
+				</s:FormItem>
+
+				<s:FormItem width="100%"
+							label="year:">
+					<s:Label text="{imdbInfos.year}"/>
+				</s:FormItem>
+
+			</s:Form>
+
+		</s:Group>
+	</s:Scroller>
+
+	<s:Group bottom="0"
+			 width="100%"
+			 horizontalCenter="0">
+
+		<assets:ToolAreaBackground left="0"
+								   right="0"
+								   bottom="0"
+								   height="100%"/>
+		
+		<s:HGroup left="5" right="5" top="5" bottom="5" 
+				  verticalAlign="middle">
+			<s:Button click="mailBtn_clickHandler(event)">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('assets/mail-icon48.png')"
+											source240dpi="@Embed('assets/mail-icon64.png')"
+											source320dpi="@Embed('assets/mail-icon128.png')"/>
+				</s:icon>
+			</s:Button>
+
+			<s:TextInput id="mail"
+						 width="100%"
+						 text="foo@bar.com"
+						 focusOut="mail_focusOutHandler(event)"/>
+		</s:HGroup>
+
+	</s:Group>
+
+</s:VGroup>

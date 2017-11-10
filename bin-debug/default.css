@@ -1,0 +1,142 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+global
+{
+	color: #000000;
+	chrome-color: #0099FF;/* bleu */
+	focus-color: #000099;/* bleu foncé */
+	
+	contentBackgroundColor: #016DA5;
+	symbol-color: #3A3A3A;
+}
+
+s|ActionBar
+{
+	chromeColor: #6699CC;/* bleu fond*/
+}
+s|Button.actionBarBtn
+{
+	color: #3a3a3a;/* gris foncé */
+}
+@media (os-platform:"IOS"){
+	s|ActionBar{
+		defaultButtonAppearance:"beveled";
+		titleAlign:"center";
+		accentColor:"0x0000FF";
+	}
+}
+@media (os-platform:"IOS"){
+	s|ActionBar.beveled s|Group#navigationGroup s|Button.actionBarBtn{
+		skinClass:ClassReference("spark.skins.mobile.BeveledActionButtonSkin");
+	}
+}
+
+s|View
+{
+	backgroundColor:#6699CC;/* bleu fond*/
+}
+
+
+s|TextInput
+{
+	fontSize: 16;
+	color:  #3a3a3a;/*gris foncé*/
+	contentBackgroundColor: #00CCCC;/* bleu-vert */
+}
+@media (application-dpi: 240) {
+	s|TextInput{
+		fontSize: 22;
+	}
+}
+@media (application-dpi: 320) {
+	s|TextInput{
+		fontSize: 28;
+	}
+}
+
+s|Label
+{
+	color:  #3a3a3a;/*gris foncé*/
+	textAlign: left;
+}
+
+s|Label.url
+{
+	color: blue;
+	fontWeight: bold;
+	paddingTop: 10;
+	textAlign: center;
+	textDecoration: underline;
+}
+s|Label.formLabel
+{
+	color:  #FFFFFF;
+}
+
+.titleDisplay
+{
+	color: #EEEDC5 ;/*  jaune */
+	textAlign: left;
+	fontWeight: bold;
+}
+
+s|Button
+{
+	color: #3a3a3a;/* gris foncé */
+}
+
+.keySearch
+{
+	content-background-color: #00CCCC;/* bleu-vert */
+	color: #3a3a3a;/* gris foncé */
+	fontWeight: bold;
+}
+
+s|IconItemRenderer
+{
+	message-style-name: message;
+	color: #EEEDC5;/* jaune */
+	downColor: #6b93aa;
+}
+
+s|TextArea
+{
+	color: #FFFFFF;
+	contentBackgroundColor: #027fbf;/* bleu fond ta 016da5*/
+	selectionColor: blue;
+}
+
+.message{
+	fontWeight: bold;
+	color: #3a3a3a;/*gris foncé*/
+}
+
+.mobileList
+{
+	contentBackgroundColor: #6b93aa;
+	alternatingItemColors: #6699CC, #016da5;
+}
+
+s|SkinnableTextBase:normalWithPrompt {
+	color: #EEEDC5;
+}
+
+
+s|Form{
+	chromeColor: #6699CC;/* bleu fond*/
+	backgroundColor:#6699CC;/* bleu fond*/
+}
+
+s|FormItem{
+	chromeColor: #6699CC;/* bleu fond*/
+	backgroundColor:#6699CC;
+	color: #FFF9F9;/* bleu fond*/
+}
+
+s|FormItem s|Label
+{
+	color:  #FFFFFF;
+	textAlign: "left";
+	verticalAlign: "middle";
+}

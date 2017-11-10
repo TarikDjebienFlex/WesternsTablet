@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<westerns>
+	<western id="0001" fr="3H10 Pour Yuma" us="" réalisateur="James Mangold" année="2007" imageURL="data/images/0001.jpg">
+		<description>
+		<![CDATA[Revenu blessé de la guerre de Sécession, Dan Evans a établi sa famille dans un ranch. La sécheresse a ravagé ses terres, décimé son troupeau et miné la considération que lui portent sa femme et ses enfants, en particulier son aîné Will, âgé de 14 ans. A la suite d'une attaque de diligence, le célèbre bandit Ben Wade passe par la ville de Bisbee où il est arrêté avec le concours fortuit de Evans. Recherché pour ses hold-up et ses meurtres répétés, Wade doit être convoyé vers Contention, à trois jours de cheval, pour embarquer sur un train à destination de Yuma, où se trouve le tribunal fédéral. Contre une prime qui peut sauver son ranch, Dan Evans s'engage dans l'escorte qui doit accompagner le dangereux criminel. Il est bientôt rejoint par son fils Will, fasciné par l'aura du tueur.Tandis que son gang organise son évasion, Wade engage sur le chemin de Contention un bras de fer psychologique avec ses gardiens, usant à la fois de la peur qu'il leur inspire et de la séduction qu'il exerce sur eux... ]]>
+		</description>
+	</western>
+	<western id="0002" fr="7 Mercenaires" us="The Magnificent Seven" réalisateur="John Sturges" année="1960" imageURL="data/images/0002.jpg">
+			<description>
+			<![CDATA[Avec ce film, le western aborde sa période maniériste. Le héros classique se décompose en sept personnages ayant chacun une de ses composantes. Qu'il s'agisse de la démarche ou du costume des mercenaires ou du traitement des combats, par la précision de chaque geste, le réalisateur tire le film vers le rituel. Le genre devient une fin en soi : le plaisir est dans la reconnaissance plus que dans la surprise. Le western italien approche… ]]>
+			</description>
+		</western>
+	<western id="0003" fr="100 dollars pour un sh&#xE9;rif" us="True Grit" réalisateur="Henry Hathaway" année="1969" imageURL="data/images/0003.jpg">
+			<description>
+			<![CDATA[Pour venger la mort de son père, une jeune femme qui a tout d'un garçon manqué, est prête à tout. Elle fait appel à Rooster Cogburn, un marshall borgne qui n'a peur de rien, et à un Texas Ranger assoiffé d'argent pour retrouver l'assassin de son père.]]>
+			</description>
+	</western>
+	<western id="0004" fr="Bon la Brute et le Truand Le" us="" réalisateur="Sergio Leone" année="1966" imageURL="data/images/0004.jpg">
+		<description>
+		<![CDATA[Pendant la Guerre de Sécession, trois hommes, préférant s'intéresser à leur profit personnel, se lancent à la recherche d'un coffre contenant 200 000 dollars en pièces d'or volés à l'armée sudiste. Tuco sait que le trésor se trouve dans un cimetière, tandis que Joe connaît le nom inscrit sur la pierre tombale qui sert de cache. Chacun a besoin de l'autre. Mais un troisième homme entre dans la course : Setenza, une brute qui n'hésite pas à massacrer femmes et enfants pour parvenir à ses fins]]>
+		</description>
+</western>
+	<western id="0005" fr="Captive Aux Yeux Clairs La" us="" réalisateur="Howard Hawks" année="1952" imageURL="data/images/0005.jpg">
+		<description>
+		<![CDATA[Deux jeunes cow-boys s'engagent dans une expédition marchande et s'enfoncent dans le territoire indien. Ils tenteront de déjouer les plans malfaisants d'une compagnie de fourrure concurrente, mais ils ne résisteront pas aux charmes d'une ravissante Indienne. Coups de feu et de foudre assurés.]]>
+		</description>
+</western>
+	<western id="0006" fr="Danse Avec Les Loups" us="" réalisateur="Kevin Costner" année="1992" imageURL="data/images/0006.jpg">
+		<description>
+		<![CDATA[Le jeune lieutenant John Dunbar est envoyé à un poste de reconnaissance dans les immenses plaines du Dakota pendant la guerre de Sécession. Il rencontre au cours de l'une de ses missions de reconnaissance le peuple sioux. Le lieutenant se lie d'amitié avec la population indienne. Il arrive même à intégrer la tribu, au point d'être surnommé "Danse avec les loups", et de s'éprendre d'une des leurs, une blanche baptisée "Dressée avec le poing". 
+		]]>
+		</description>
+</western>
+	<western id="0007" fr="Dead Man" us="" réalisateur="Jim Jarmusch" année="1996" imageURL="data/images/0007.jpg">
+			<description>
+			<![CDATA[Dans la deuxième moitié du XIXe siècle, Bill Blake, jeune comptable en route pour le confins de l'Ouest américain, entreprend un voyage initiatique où il devient malgré lui un hors-la-loi traqué. Blessé, il est recueilli par Nobody, un Amérindien lettré rejeté des siens, qui l'identifie d'emblée à son homonyme défunt, le poète anglais William Blake, et décide de sauver son âme]]>
+			</description>
+</western>
+	<western id="0008" fr="Homme des Vall&#xE9;es Perdues L'" us="Shane" réalisateur="George Stevens" année="1953" imageURL="data/images/0008.jpg">
+		<description>
+		<![CDATA[Malgré les faiblesses de son scénario et la mollesse de la réalisation, ce film eut un immense succès qui en fit l'archétype de ces « surwesterns » qui virent le jour vers la fin des années 1950. Les jeunes (et moins jeunes) spectateurs eurent pour Shane (Alan Ladd, au sommet de sa gloire) les yeux du petit Joey. Car tout est vu par les yeux de cet enfant qui se cherche un père symbolique. Bref, de grosses ficelles freudiennes pour un western culte, curieusement disparu des grands et petits écrans.]]>
+		</description>
+</western>
+	<western id="0009" fr="Homme Qui Tua Liberty Valence L'" us="" réalisateur="John Ford" année="1962" imageURL="data/images/0009.jpg">
+			<description>
+			<![CDATA[Un homme politique reconnu : Ransom Stoddad assiste à l'enterrement de son ami Tom Doniphon avec sa femme. C'est pour lui l'occasion de revenir avec un journaliste sur les moments importants de sa vie, notamment son arrivée dans l'Ouest, l'arrestation de sa diligence par le célèbre bandit Liberty Valance, sa volonté de se venger de celui-ci. Jadis, Donophon était devenu son allié...]]>
+			</description>
+</western>
+	<western id="0010" fr="Il Etait une Fois Dans L'Ouest" us="" réalisateur="Sergio Leone" année="1969" imageURL="data/images/0010.jpg">
+			<description>
+			<![CDATA[Responsable du chemin de fer, Morton doit s'approprier un point d'eau afin de ravitailler ses locomotives sur une nouvelle ligne. Pour cela, il fait assassiner le propriétaire par Frank, un tueur a gages, puis il tente d'amadouer sa veuve. Mais bientôt arrive en ville un homme a la recherche de Frank pour le meurtre de son frere...]]>
+			</description>
+</western>
+	<western id="0011" fr="Johnny Guitar" us="" réalisateur="Nicholas Ray" année="1954" imageURL="data/images/0011.jpg">
+			<description>
+			<![CDATA[Johnny est engage par Vienna, tenancière d'un saloon. Ils se sont connus autrefois. Vienna est en butte à la haine d'Emma Small dont le frère a été tué lors d'une attaque de diligence.]]>
+			</description>
+</western>
+	<western id="0012" fr="Little Big Man" us="" réalisateur="Arthur Penn" année="1970" imageURL="data/images/0012.jpg">
+		<description>
+		<![CDATA[L'histoire d'un visage pale partagé entre ses origines et sa famille d'adoption, indienne.]]>
+		</description>
+</western>
+	<western id="0013" fr="Missouri Breaks" us="" réalisateur="Arthur Penn" année="1976" imageURL="data/images/0013.jpg">
+		<description>
+		<![CDATA[Tom Cattle est un voleur de bétail. Pour couvrir ses activités, il achète un ranch. Mais, le propriétaire du ranch voisin a engagé un "mercenaire" afin d'éliminer les voleurs de bétail.]]>
+		</description>
+</western>
+	<western id="0014" fr="Open range" us="" réalisateur="Kevin Costner" année="2002" imageURL="data/images/0014.jpg">
+		<description>
+		<![CDATA[Boss Spearman, Charley Waite, Mose Harrison et Button mènent leurs troupeaux à travers les vastes plaines de l'Ouest. Les quatre hommes partagent une amitié basée sur un solide code d'honneur. Leur migration les conduit à Harmonville, un patelin sous la férule d'un shérif corrompu et d'un rancher tyrannique.Boss et Charley se trouvent irrémédiablement entraînés vers une confrontation avec les dirigeants de la petite ville pour protéger la liberté et les valeurs rattachées à leur style de vie d'une autre époque. Dans la tourmente, la vie de Charley est bouleversée par sa rencontre avec Sue Barlow, une femme superbe et chaleureuse qui séduit à la fois son coeur et son esprit...]]>
+		</description>
+	</western>
+	<western id="0015" fr="Pale Rider" us="" réalisateur="Clint Eastwood" année="1985" imageURL="data/images/0015.jpg">
+		<description>
+		<![CDATA[Les derniers chercheurs d'or indépendants de LaHood, bourgade minière de Californie, sont harcelés par la bande de Coy LaHood, fondateur de la ville qui veut s'approprier leur concession. Au moment ou les mineurs pacifiques sont prêts a abandonner la lutte, surgit de la montagne un cavalier solitaire tout de noir vêtu. Nul ne connait son nom, son passe, ses origines. Hull Barret, opposé depuis longtemps a Coy LaHood, l'accueille sous son toit. L'homme ne va pas tarder à prouver ses qualités de tireur.]]>
+		</description>
+</western>
+	<western id="0016" fr="Prisonnière du desert La" us="" réalisateur="John Ford" année="1956" imageURL="data/images/0016.jpg">
+			<description>
+			<![CDATA[Sur fond de Monument Valley, la Prisonnière du désert campe un espace où l'enracinement familial et féminin constitue le rêve impossible de protagonistes qui sont autant de chevaliers errants. Si le nomadisme est poussé le plus loin par les Comanches « Noyaki », un parallèle insistant assimile Ethan Edwards à son ennemi mortel, le chef Scar : rescapés de causes perdues, défaits par la même cavalerie yankee, décorés tour à tour de la même médaille mexicaine, ils sont également hantés par l'idée de venger leurs morts, collectionnent les scalps et manient, l'un à l'égard de l'autre, le même sarcasme qui cache la même blessure ; leur amour pour Debbie manifeste d'ailleurs la même tendresse inexplicable. Debbie erre d'une culture à l'autre, comme dans le registre picaresque Sam Clayton endosse alternativement la tunique du révérend et le manteau du capitaine de Rangers. Préfigurant les Cheyennes, l'air guilleret de « Gary Owen » accompagne un honteux génocide. Une action pleine de bruit et de fureur a pour témoin le vieux Mose, fou shakespearien qui mime trop bien la folie pour ne pas être sage et sait en effet mériter le rocking-chair qui mettra un terme à sa propre errance. L'interprétation a la clarté de l'évidence : Wayne massif et bougon, Jeffrey Hunter au regard bleu acéré, Natalie Wood aux graves yeux noirs, Bond en moine-soldat, Vera Miles en garçon manqué à la franche sexualité.]]>
+			</description>
+</western>
+	<western id="0017" fr="Rio Bravo" us="" réalisateur="Howard Hawks" année="1959" imageURL="data/images/0017.jpg">
+		<description>
+		<![CDATA[Un shérif arrête le frère de l'homme le plus puissant de la région. Il n'a pour alliés qu'un adjoint ivrogne, un vieillard boiteux, un gamin, une joueuse de poker et un hôtelier mexicain, et contre lui une armée de tueurs.]]>
+		</description>
+</western>
+	<western id="0018" fr="Silverado" us="" réalisateur="Lawrence Kasdan" année="1985" imageURL="data/images/0018.jpg">
+			<description>
+			<![CDATA[Quatre aventuriers font route vers la ville de Silverado. Le hasard les réunit, la violence et le danger les rapprochent, l'amitié en fait des héros.]]>
+	</description>
+</western>
+	<western id="0019" fr="Train Sifflera 3 Fois Le" us="" réalisateur="Fred Zinnemann" année="1952" imageURL="data/images/0019.jpg">
+		<description>
+		<![CDATA[	Alors qu'il s'apprête a abandonner ses fonctions de shérif pour se marier, Will Kane apprend qu'un bandit, condamné autrefois par lui, arrive par le train pour se venger. Will renonce à son voyage de noces et tente de réunir quelques hommes pour braver Miller et sa bande. Mais peu à peu tous l'abandonnent.]]>
+</description>
+</western>
+</westerns>

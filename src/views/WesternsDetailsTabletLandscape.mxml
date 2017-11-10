@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:components="components.*"
+		
+		viewActivate="viewActivateHandler(event)"
+		dataChange="dataChangeHandler(event)"
+		gestureSwipe="swipeHandler(event)"
+		currentStateChange="checkOrientation(event)">
+	
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<s:SlideViewTransition id="_slideViewTransition"
+							   direction="{ViewTransitionDirection.RIGHT}"
+							   mode="{SlideViewTransitionMode.COVER}"/>
+		<s:ZoomViewTransition id="_zoomTransition"
+							  mode="{ZoomViewTransitionMode.IN}"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			import spark.transitions.SlideViewTransition;
+			import spark.transitions.SlideViewTransitionMode;
+			import spark.transitions.ViewTransitionDirection;
+			import spark.transitions.ZoomViewTransition;
+			import spark.transitions.ZoomViewTransitionMode;
+			
+			import utils.Mobile;
+			
+			import vo.IMDbvo;
+			import vo.WesternVO;
+			import vo.WesternsCollection;
+			
+			import westernsEvents.IMDbEvent;
+			
+			[Bindable]
+			private var _moviesCollection:WesternsCollection;
+			[Bindable]
+			private var _movie:WesternVO;
+			private var _imdb:IMDbvo=null;
+			private var _webView:StageWebView=new StageWebView();
+			private var zoomMode:Boolean=false;
+			
+			/**
+			 * Chargement des données en restuaration de vue
+			 * @param event
+			 *
+			 */
+			private function dataChangeHandler(event:FlexEvent):void
+			{
+				if (data)
+				{
+					_moviesCollection=data as WesternsCollection;
+					_movie=_moviesCollection.getCurrentMovie();
+				}
+			}
+			
+			/**
+			 * navigation vers film précédent
+			 *
+			 */
+			private function goPrev():void
+			{
+				doNavigate(-1);
+			}
+			
+			/**
+			 * navgation vers film suivant
+			 *
+			 */
+			private function goNext():void
+			{
+				doNavigate(1);
+			}
+			
+			/**
+			 * gestion du swipe pour naviguer en avant et en arrière dnas la collection
+			 * @param event
+			 *
+			 */
+			private function swipeHandler(event:TransformGestureEvent):void
+			{
+				// si la propriété offsetX = -1 => swipe vers la gauche 
+				// si la propriété offsetX = 1 => swipe vers la droite
+				if (event.offsetX == -1)
+				{
+					goNext();
+				}
+				else if (event.offsetX == 1)
+				{
+					goPrev();
+				}
+				
+				// même chose pour le swipe vertical non pris en compte ici
+				if (event.offsetY == -1)
+				{
+					//goPrev();
+				}
+				else if (event.offsetY == 1)
+				{
+					//goNext();
+				}
+			}
+			
+			/**
+			 * effectue la navigation dans la collection
+			 * @param navigation
+			 *
+			 */
+			private function doNavigate(navigation:int):void
+			{
+				var navigate:Boolean=false;
+				
+				if (navigation > 0)
+				{
+					navigate=(_moviesCollection.currentItem != _moviesCollection.arrayCollection.length);
+					_slideViewTransition.direction=ViewTransitionDirection.LEFT;
+				}
+				else
+				{
+					navigate=(_moviesCollection.currentItem != 0);
+					_slideViewTransition.direction=ViewTransitionDirection.RIGHT;
+				}
+				
+				if (navigate)
+				{
+					_moviesCollection.currentItem=_moviesCollection.currentItem + navigation;
+					
+					if (false)
+					{
+						navigator.popToFirstView(); // éviter l'empilement des vues
+						navigator.pushView(WesternsDetails, data, null, _slideViewTransition);
+					}
+					else
+					{ // replaceView est plus élégant dans ce cas
+						if (Mobile.isTablet())
+						{
+							navigator.replaceView(WesternsDetailsTabletLandscape, data,null, _slideViewTransition);
+						}
+						else
+						{
+							navigator.replaceView(WesternsDetails, data,null, _slideViewTransition);
+						}
+					}
+					
+				}
+			}
+			
+			/**
+			 * paramétrage des transitions entre vues
+			 *
+			 */
+			private function setViewTransitions():void
+			{
+				_slideViewTransition.direction=ViewTransitionDirection.RIGHT;
+				_slideViewTransition.mode=SlideViewTransitionMode.COVER;
+				
+				_zoomTransition.mode=ZoomViewTransitionMode.IN;
+				_zoomTransition.duration=500;
+			}
+			
+			/**
+			 * Activation de la vue
+			 * affichage de la zone Web
+			 */
+			private function displayIMDb(url:String):void
+			{
+				if (StageWebView.isSupported)
+				{
+					_webView.stage=stage;
+					webSetViewPort(Mobile.getWidth(), Mobile.getHeight(), currentState);
+					_webView.loadURL(url);
+					_webView.addEventListener(Event.COMPLETE, webViewCompleteHandler);
+					
+					addEventListener(ViewNavigatorEvent.REMOVING, removeHandler);
+				}
+			}
+			
+			/**
+			 *  Remove de la vue
+			 *  détruire la zone web
+			 * @param event
+			 *
+			 */
+			private function removeHandler(event:ViewNavigatorEvent):void
+			{
+				this._webView.dispose();
+			}
+			
+			/**
+			 * une resource Web est chargée ds la zone web
+			 * @param event
+			 *
+			 */
+			private function webViewCompleteHandler(event:Event):void
+			{
+				_webView.removeEventListener(Event.COMPLETE, webViewCompleteHandler);
+			}
+			
+			/**
+			 * redimensionnement de la zone Web
+			 *
+			 */
+			private function webSetViewPort(currWidth:Number, currHeight:Number, currState:String):void
+			{
+				if (_webView)
+				{
+					var scaleFactor:Number=FlexGlobals.topLevelApplication.scaleFactor;
+					
+					var offset:int=5;
+					var vx:Number;
+					var topY:Number;
+					var webWidth:Number;
+					var webHeight:Number;
+					
+					if (zoomMode)
+					{
+						vx=offset;
+						topY=navigator.actionBar.height + offset;
+						webWidth=(currWidth - vx - offset) * scaleFactor;
+						webHeight=(currHeight - topY) * scaleFactor;
+					}
+					else
+					{
+						switch (currState)
+						{
+							case "landscape":
+								vx=(currWidth * 2 / 3) + offset;
+								topY=navigator.actionBar.height;
+								webWidth=(currWidth - vx) * scaleFactor;
+								webHeight=(currHeight - topY) * scaleFactor;
+								break;
+							
+							case "portrait":
+								vx=offset;
+								topY=(currHeight * 2 / 3) + offset;
+								webWidth=(currWidth - vx - offset) * scaleFactor;
+								webHeight=(currHeight - topY) * scaleFactor;
+								break;
+						}
+					}
+					
+					_webView.viewPort=new Rectangle(vx * scaleFactor, topY * scaleFactor, webWidth, webHeight);
+				}
+			}
+			
+			private function viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				if (_moviesCollection)
+				{
+					imdbDetails.imdbService.send();
+				}
+			}
+			
+			private function imdbResultHandler(event:IMDbEvent):void
+			{
+				_imdb=event.imdbvo;
+				displayIMDb("http://www.imdb.com/title/" + _imdb.id);
+			}
+			
+			/**
+			 * en cas de changement d'orientation
+			 * redimensionner la zone web
+			 * @param e
+			 *
+			 */
+			private function checkOrientation(e:StateChangeEvent):void
+			{
+				var currWidth:Number;
+				var currHeight:Number;
+				
+				if (e.newState == "landscape")
+				{
+					currWidth=Mobile.getHeight();
+					currHeight=Mobile.getWidth();
+				}
+				if (e.newState == "portrait")
+				{
+					if (false)
+					{ // bug Flex ?
+						currWidth=Mobile.getWidth();
+						currHeight=Mobile.getHeight();
+					}
+					else
+					{
+						currWidth=Mobile.getHeight();
+						currHeight=Mobile.getWidth();
+					}
+				}
+				
+				webSetViewPort(currWidth, currHeight, e.newState);
+			}
+			
+			private function zoom_clickHandler(event:MouseEvent):void
+			{
+				webViewZoom();
+			}
+			
+			/**
+			 * la zone web est extensible à toute la vue
+			 *
+			 */
+			private function webViewZoom():void
+			{
+				zoomMode=!zoomMode;
+				webSetViewPort(Mobile.getWidth(), Mobile.getHeight(), currentState);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="portrait"/>
+		<s:State name="landscape"/>
+	</s:states>
+	
+	<s:navigationContent>
+		<s:Button icon="@Embed('assets/home.png')"
+				  height="90%"
+				  click="navigator.popToFirstView()"/>
+		<s:Spacer width="10"/>
+		<s:Button id="prev_btn"
+				  label="&lt;"
+				  width="50"
+				  height="90%"
+				  click="goPrev()"
+				  enabled="{_moviesCollection.currentItem!=0}"
+				  styleName="actionBarBtn"/>
+	</s:navigationContent>
+	<s:titleContent>
+		<s:Label text="{_movie.fr}"
+				 styleName="titleDisplay"
+				 width="100%"
+				 maxDisplayedLines="1"/>
+	</s:titleContent>
+	<s:actionContent>
+		<s:Button id="next_btn"
+				  label="&gt;"
+				  width="50"
+				  height="90%"
+				  click="goNext()"
+				  enabled="{_moviesCollection.currentItem!=_moviesCollection.arrayCollection.length-1}"
+				  styleName="actionBarBtn"/>
+		<s:Spacer width="10"/>
+		<s:Button height="90%"
+				  width="90%"
+				  click="zoom_clickHandler(event)"
+				  styleName="ActionBarBtn"
+				  label="">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/resize-48.png')"
+										source240dpi="@Embed('assets/resize-48.png')"
+										source320dpi="@Embed('assets/resize-72.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:actionContent>
+	
+	<s:viewMenuItems>
+		<components:HomeMenuItem appNavigator="{navigator}"/>
+	</s:viewMenuItems>
+	
+	<s:VGroup id="detail"
+			  horizontalAlign="center"
+			  verticalAlign="top"
+			  paddingLeft="5"
+			  paddingRight="5"
+			  paddingTop="10"
+			  width.landscape="33%"
+			  height.landscape="100%"
+			  width.portrait="50%"
+			  height.portrait="65%">
+		
+		<components:Details id="details"
+							width="100%"
+							height="100%"
+							western="{_movie}"
+							displayPoster="navigator.pushView(WesternsPoster,_movie,null,_zoomTransition)"/>
+	</s:VGroup>
+	
+	<s:VGroup id="imdbDetailsGoup"
+			  horizontalAlign="center"
+			  verticalAlign="top"
+			  paddingBottom="5"
+			  paddingLeft="5"
+			  paddingRight="5"
+			  paddingTop="10"
+			  width.landscape="33%"
+			  height.landscape="100%"
+			  width.portrait="50%"
+			  height.portrait="65%">
+		<components:IMDbDetails id="imdbDetails"
+								width="100%"
+								height="100%"
+								western="{_movie}"
+								imdbResult="imdbResultHandler(event)">
+		</components:IMDbDetails>
+		
+	</s:VGroup>
+	
+	<s:VGroup id="imdbWeb"
+			  includeIn="landscape"
+			  width="33%"
+			  height="100%"
+			  horizontalAlign="center">
+	</s:VGroup>
+	
+</s:View>

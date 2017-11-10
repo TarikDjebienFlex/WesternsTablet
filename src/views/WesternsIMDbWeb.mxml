@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:components="components.*"
+		
+		viewActivate="viewActivateHandler()"
+		creationComplete="creationCompleteHandler(event)"
+		dataChange="dataChangeHandler(event)"
+		addedToStage="addedToStageHandler(event)">
+	
+	<fx:Declarations>
+		<s:Bounce id="_bounceEasing"/>
+		<s:FlipViewTransition id="_flipTransition"
+							  duration="1000"
+							  mode="cube"
+							  direction="right"
+							  easer="{_bounceEasing}"/>
+		<s:Button id="backBtn"
+				  label="Back"
+				  height="90%"
+				  click="navigator.popView(flipTrans)"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			import spark.transitions.FlipViewTransition;
+			
+			import utils.Mobile;
+			
+			import vo.IMDbvo;
+			
+			protected static const IMDB_URL:String="http://www.imdb.com/title/";
+			[Bindable]
+			public var url:String="";
+			
+			private var _movie:IMDbvo;
+			private var _webView:StageWebView=new StageWebView();
+			private var flipTrans:FlipViewTransition=new FlipViewTransition();
+			
+			/**
+			 * Activation de la vue
+			 * affichage de la zone Web
+			 */
+			private function viewActivateHandler():void
+			{
+				/* quand PersistenceManager restaure la vue, 
+				le cycle d'événement n'est pas le même que lors de la création
+				il faut gérer StageWebView dans le handler de l'event "addedToStage"
+				*/
+			}
+			
+			/**
+			 * restauration de l'état de la vue
+			 * @param event:FlexEvent
+			 *
+			 */
+			private function dataChangeHandler(event:FlexEvent):void{
+				_movie=data as IMDbvo;
+				if(_movie){
+					url=IMDB_URL + _movie.id;
+				}
+			}
+			
+			/**
+			 * affichage de la zone Web
+			 */
+			private function stageWebViewDisplay(url:String):void{
+				if (StageWebView.isSupported){
+					_webView.stage=stage;
+					_webView.addEventListener(ErrorEvent.ERROR, webViewErrorHandler);
+					_webView.addEventListener(Event.COMPLETE, webViewCompleteHandler);
+					_webView.loadURL(url);
+					
+					addEventListener(ViewNavigatorEvent.REMOVING, removeHandler);
+				}
+			}
+			
+			/**
+			 *  Remove de la vue
+			 *  détruire la zone web
+			 * @param event
+			 *
+			 */
+			private function removeHandler(event:ViewNavigatorEvent):void
+			{// bug 2011-10-13
+				_webView.removeEventListener(ErrorEvent.ERROR, webViewErrorHandler);
+				_webView.dispose();
+				_webView=null;
+				stage.removeEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChangeHandler);
+			}
+			
+			/**
+			 * une resource Web est chargée ds la zone web
+			 * @param event
+			 *
+			 */
+			private function webViewCompleteHandler(event:Event):void{
+				bi.visible=false;
+				_webView.removeEventListener(Event.COMPLETE, webViewCompleteHandler);
+			}
+			
+			/**
+			 * redimensionnement de la zone Web
+			 *
+			 */
+			private function webSetViewPort(currWidth:Number, currHeight:Number):void{
+				if (_webView){
+					var offset:int=5;
+					var topY:Number=navigator.actionBar.height + offset;
+					var webWidth:Number=currWidth - offset;
+					var webHeight:Number=currHeight - topY - (2 * offset);
+					
+					_webView.viewPort=new Rectangle(offset, topY, webWidth, webHeight);
+				}
+			}
+			
+			/**
+			 * gestionnaire d'erreurs de la zone Web
+			 *
+			 */
+			private function webViewErrorHandler(error:ErrorEvent):void { 
+				trace(error);
+			}
+			
+			private function addedToStageHandler(event:Event):void{
+				if(_webView){
+					stageWebViewDisplay(this.url);
+					webSetViewPort(Mobile.getWidth(), Mobile.getHeight());
+				}
+				
+				stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE,orientationChangeHandler);
+			}
+			
+			private function orientationChangeHandler(e:StageOrientationEvent):void{
+				webSetViewPort(Mobile.getWidth(), Mobile.getHeight());
+			}
+			
+			private function creationCompleteHandler(event:FlexEvent):void{
+				Mobile.addIOSbtn(backBtn);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:navigationContent/>
+	<s:titleContent>
+		<s:Label width="100%"
+				 styleName="titleDisplay"
+				 text="IMDb"/>
+	</s:titleContent>
+	<s:actionContent>
+		<s:BusyIndicator id="bi"
+						 visible="true"
+						 top="2"
+						 horizontalCenter="0"
+						 symbolColor="blue"/>
+	</s:actionContent>
+	
+	<s:viewMenuItems>
+		<components:HomeMenuItem appNavigator="{navigator}"/>
+	</s:viewMenuItems>
+</s:View>

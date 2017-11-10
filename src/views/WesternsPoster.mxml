@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:components="components.*"
+		
+		overlayControls="true"
+		title="{data.fr}"
+		
+		dataChange="dataChangeHandler(event)"
+		viewActivate="viewActivateHandler(event)"
+		creationComplete="creationCompleteHandler(event)"
+		gesturePan="panImage(event)">
+
+	<fx:Declarations>
+		<s:ZoomViewTransition id="_zoomTransition" 
+							  mode="{ZoomViewTransitionMode.OUT}"/>
+							  
+		<s:Button id="backBtn"
+				  label="Détail"
+				  height="90%"
+				  click="navigator.popView(_zoomTrans)"/>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			import spark.transitions.ZoomViewTransition;
+			import spark.transitions.ZoomViewTransitionMode;
+			
+			import utils.Mobile;
+			
+			import vo.WesternVO;
+
+			[Bindable] private var _url:String;
+			
+			private var _zoomTrans:ZoomViewTransition=new ZoomViewTransition();
+
+			/**
+			 * gestionnaire dataChange
+			 * @param event
+			 * gestion de l'instance courante de Western
+			 */
+			private function dataChangeHandler(event:FlexEvent):void
+			{
+				var western:WesternVO=data as WesternVO;
+				if (western)
+				{
+					_url=western.posterURL;
+				}
+			}
+
+			/**
+			 * calcul de l'url de l'affiche
+			 * @param id:String
+			 * @return :String
+			 *
+			 */
+			private function getPosterUrl(id:String):String
+			{
+				var prefix:String="0";
+				var i:int=0;
+				var max:int=3 - id.length;
+
+				for (i=0; i < max; i++)
+				{
+					prefix+="0";
+				}
+
+				return "data/affiches/" + prefix + id + ".jpg";
+			}
+
+			/**
+			 * gestion de l'activation de la vue
+			 * déclaration des gestionnaires de gestures
+			 * ajout du bouton de retour au détail si iOS
+			 * @param event
+			 *
+			 */
+			private function viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				poster.addEventListener(TransformGestureEvent.GESTURE_ZOOM, zoomImage);
+				poster.addEventListener(TransformGestureEvent.GESTURE_ROTATE, rotateImage);
+				//poster.addEventListener(TransformGestureEvent.GESTURE_PAN, panImage);
+				
+			}
+
+			/**
+			 * gestuelle de zoom
+			 * @param e
+			 *
+			 */
+			private function zoomImage(e:TransformGestureEvent):void
+			{
+				e.stopImmediatePropagation();
+
+				// on vérifie un seuil de 0.5 en minin et 3 en maxi
+				if (e.scaleX < 1 || e.scaleY < 1)
+				{
+					if (poster.scaleX > 0.5)
+					{
+						poster.scaleX*=e.scaleX;
+						poster.scaleY*=e.scaleY;
+					}
+					else
+					{
+						poster.scaleX=0.5;
+						poster.scaleY=0.5;
+					}
+				}
+				else
+				{
+					if (poster.scaleX < 3)
+					{
+						poster.scaleX*=e.scaleX;
+						poster.scaleY*=e.scaleY;
+					}
+					else
+					{
+						poster.scaleX=3;
+						poster.scaleY=3;
+					}
+				}
+			}
+
+			/**
+			 * gestuelle de rotation
+			 * @param event
+			 *
+			 */
+			private function rotateImage(e:TransformGestureEvent):void
+			{
+				e.stopImmediatePropagation();
+				poster.rotation+=e.rotation;
+			}
+
+			/**
+			 *gestuelle de pan (déplacement)
+			 * @param e
+			 *
+			 */
+			private function panImage(e:TransformGestureEvent):void
+			{
+				trace("On pan... " + e.offsetX + " offset Y " + e.offsetY);
+				e.stopImmediatePropagation();
+
+				poster.x+=e.offsetX * 3;
+				poster.y+=e.offsetY * 3;
+			}
+			
+			/**
+			 *centrer l'image
+			 *
+			 */
+			private function centerPoster():void{
+				poster.x=Mobile.getWidth()/2-(poster.width/2);
+				poster.y=Mobile.getHeight()/2-(poster.height/2);
+			}
+			
+			private function creationCompleteHandler(event:FlexEvent):void
+			{
+				Mobile.addIOSbtn(backBtn);
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:navigationContent/>
+
+	<s:titleContent>
+		<s:Label text="{data.fr}"
+				 styleName="titleDisplay"
+				 width="100%"/>
+	</s:titleContent>
+
+	<s:viewMenuItems>
+		<components:HomeMenuItem appNavigator="{navigator}"/>
+	</s:viewMenuItems>
+
+	<s:Image id="poster" 
+			 source="{_url}" resize="centerPoster();"/>
+</s:View>

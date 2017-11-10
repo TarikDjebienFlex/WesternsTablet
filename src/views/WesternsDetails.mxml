@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:assets="assets.*"
+		xmlns:components="components.*"
+		
+		dataChange="dataChangeHandler(event)"
+		viewActivate="viewActivateHandler(event)"
+		gestureSwipe="swipeHandler(event)">
+	
+	<fx:Declarations>
+		<s:SlideViewTransition id="_slideViewTransition"
+							   direction="{ViewTransitionDirection.RIGHT}"
+							   mode="{SlideViewTransitionMode.COVER}"/>
+		<s:ZoomViewTransition id="_zoomTransition"
+							  mode="{ZoomViewTransitionMode.IN}"/>
+		<s:CrossFadeViewTransition id="_fadeTransition"/>
+		<s:MultiDPIBitmapSource id="imdbIcons"
+								source160dpi="@Embed('/assets/imdb-icon160.png')"
+								source240dpi="@Embed('/assets/imdb-icon240.png')"
+								source320dpi="@Embed('/assets/imdb-icon320.png')"/>
+	</fx:Declarations>
+	
+	<fx:Script source="westernsDetails.as"/>
+	
+	<s:navigationContent>
+		<s:Button icon="@Embed('assets/home.png')"
+				  height="90%"
+				  click="navigator.popToFirstView()"/>
+		<s:Spacer width="5"/>
+		<s:Button id="prev_btn"
+				  label="&lt;"
+				  width="90%"
+				  height="90%"
+				  click="goPrev()"
+				  enabled="{_moviesCollection.currentItem!=0}"
+				  styleName="actionBarBtn"/>
+	</s:navigationContent>
+	<s:titleContent>
+		<s:Label text="{_movie.fr}"
+				 styleName="titleDisplay"
+				 width="100%"
+				 maxDisplayedLines="1"
+				 />
+	</s:titleContent>
+	<s:actionContent>
+		<s:Button id="next_btn"
+				  label="&gt;"
+				  width="90%"
+				  height="90%"
+				  click="goNext()"
+				  enabled="{_moviesCollection.currentItem!=_moviesCollection.arrayCollection.length-1}"
+				  styleName="actionBarBtn"/>
+	</s:actionContent>
+	
+	<s:viewMenuItems>
+		<components:HomeMenuItem appNavigator="{navigator}"/>
+	</s:viewMenuItems>
+	
+	<components:Details id="details"
+						width="100%"
+						height="100%"
+						displayPoster="details_displayPosterHandler(event)"
+						western="{_movie}"
+						paddingLeft="5"
+						paddingRight="5"
+						paddingTop="5"/>
+	
+	<s:Button id="imdb"
+			  right="5"
+			  bottom="5"
+			  enabled="{_movie!=null}"
+			  click="imdbIcon_clickHandler(event)">
+		<s:icon>
+			<s:MultiDPIBitmapSource source160dpi="@Embed('/assets/imdb-icon160.png')"
+									source240dpi="@Embed('/assets/imdb-icon240.png')"
+									source320dpi="@Embed('/assets/imdb-icon320.png')"/>
+		</s:icon>
+	</s:Button>
+	
+</s:View>
